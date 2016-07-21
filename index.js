@@ -3,6 +3,8 @@ console.log("welcome to firebase-starter")
 var myFirebaseRef = new Firebase("https://fir-example-99bc6.firebaseio.com/");
 
 document.getElementById('fetchAll').addEventListener('click', fetchAll)
+document.getElementById('submit-button').addEventListener('click', submitMessage)
+document.getElementById('signup-button').addEventListener('click', signUp)
 
 fetchAll()
 
@@ -18,8 +20,6 @@ function fetchAll(e) {
 	})
 }
 
-document.getElementById('submit-button').addEventListener('click', submitMessage)
-
 function submitMessage(e) {
 	e.preventDefault()
 	var messageText = document.getElementById('message-input').value
@@ -31,6 +31,27 @@ function submitMessage(e) {
 	myFirebaseRef.child("messages").push().set(message)
 
 }
+
+function signUp(e) {
+	e.preventDefault()
+	var email = document.getElementById('email-input').value
+	var password = document.getElementById('password-input').value
+
+	myFirebaseRef.createUser({
+		email:email,
+		password: password
+	},
+		function(error, userData) {
+			if(error) {
+				console.log('error creating user:', error)
+			}
+			else {
+				console.log("Successfully created user account with uid:", userData.uid)
+			}
+		}
+	)
+}
+
 
 function appendListItem(ul, text) {
 	// var ul = document.getElementById("data-output")
