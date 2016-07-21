@@ -10,10 +10,16 @@
     <main>
       <h1>firebase-starter</h1>
       <button id="fetchAll">fetchAll</button>
-      <div class="data-output">
+      <ul id="data-output">
 
-      </div>
+      </ul>
+      <form>
+        <input type="text" name="name" placeholder="name"/>
+        <input type="text" name="email" placeholder="email"/>
+        <input id="submit-button" type="submit" name="submit" value="submit"></input>
+      </form>
     </main>
+    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <script src="bundle.js"></script>
   </body>
 </html>
