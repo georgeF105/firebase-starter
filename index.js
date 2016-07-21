@@ -1,6 +1,15 @@
 console.log("welcome to firebase-starter")
 
-var myFirebaseRef = new Firebase("https://fir-example-99bc6.firebaseio.com/");
+//var myFirebaseRef = new Firebase("https://fir-example-99bc6.firebaseio.com/");
+
+var config = {
+  apiKey: "AIzaSyBRj3W3B9AtbSGelx3XXqgcAGifo3oe1Bo",
+  authDomain: "fir-example-99bc6.firebaseapp.com",
+  databaseURL: "https://fir-example-99bc6.firebaseio.com",
+  storageBucket: "fir-example-99bc6.appspot.com",
+}
+
+firebase.initializeApp(config)
 
 document.getElementById('fetchAll').addEventListener('click', fetchAll)
 document.getElementById('submit-button').addEventListener('click', submitMessage)
@@ -11,7 +20,7 @@ fetchAll()
 function fetchAll(e) {
 	var ul = document.getElementById("data-output")
 	
-	myFirebaseRef.child("messages").on("value", function(messages) {
+	firebase.database().ref("messages").on("value", function(messages) {
 		clearList(ul)
 		console.log(messages.val())
 		for( message in messages.val()){
@@ -28,7 +37,7 @@ function submitMessage(e) {
 	message.message = messageText
 	message.submitter = "unknown"
 
-	myFirebaseRef.child("messages").push().set(message)
+	firebase.database().ref("messages").push().set(message)
 
 }
 
@@ -37,21 +46,25 @@ function signUp(e) {
 	var email = document.getElementById('email-input').value
 	var password = document.getElementById('password-input').value
 
-	myFirebaseRef.createUser({
-		email:email,
-		password: password
-	},
-		function(error, userData) {
-			if(error) {
-				console.log('error creating user:', error)
-			}
-			else {
-				console.log("Successfully created user account with uid:", userData.uid)
-			}
-		}
-	)
+	firebase.auth().createUserWithEmailAndPassword(email, password)
+		.then(function(user) {
+			console.log('user',user)
+		})
+		.catch(function(error) {
+			console.log('error code', error.code)
+			console.log('error message', error.message)
+		})
 }
 
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    console.log('user logged in')
+  } else {
+    // No user is signed in.
+    console.log('no user logged in')
+  }
+})
 
 function appendListItem(ul, text) {
 	// var ul = document.getElementById("data-output")
