@@ -5,35 +5,42 @@ var myFirebaseRef = new Firebase("https://fir-example-99bc6.firebaseio.com/");
 document.getElementById('fetchAll').addEventListener('click', fetchAll)
 
 fetchAll()
-function fetchAll() {
-	myFirebaseRef.child("customers").on("value", function(customers) {
-		console.log(customers.val())
-		for( customer in customers.val()){
-			console.log(customer)
-			appendListItem('Name: ' + customers.val()[customer].name + '  Email: ' + customers.val()[customer].email)
+
+function fetchAll(e) {
+	var ul = document.getElementById("data-output")
+	
+	myFirebaseRef.child("messages").on("value", function(messages) {
+		clearList(ul)
+		console.log(messages.val())
+		for( message in messages.val()){
+			appendListItem(ul, 'Message: ' + messages.val()[message].message + '  user: ' + messages.val()[message].submitter)
 		}
 	})
 }
 
-document.getElementById('submit-button').addEventListener('click', submitUser)
+document.getElementById('submit-button').addEventListener('click', submitMessage)
 
-function submitUser(e) {
+function submitMessage(e) {
 	e.preventDefault()
-	var userName = document.getElementById('name-input').value
-	var userEmail = document.getElementById('email-input').value
-	console.log('userName', userName)
-	console.log('userEmail', userEmail)
-	var customer = {}
-	customer.name = userName
-	customer.email = userEmail
+	var messageText = document.getElementById('message-input').value
+	console.log('message', message)
+	var message = {}
+	message.message = messageText
+	message.submitter = "unknown"
 
-	myFirebaseRef.child("customers").push().set(customer)
+	myFirebaseRef.child("messages").push().set(message)
 
 }
 
-function appendListItem(text) {
-	var ul = document.getElementById("data-output")
+function appendListItem(ul, text) {
+	// var ul = document.getElementById("data-output")
 	var li = document.createElement("li")
 	li.appendChild(document.createTextNode(text))
 	ul.appendChild(li)
+}
+
+function clearList(ul) {
+	while (ul.firstChild) {
+		ul.removeChild(ul.firstChild)
+	}
 }
