@@ -8,16 +8,22 @@
   </head>
   <body>
     <main>
-      <h1>firebase-starter</h1>
+      <div class="header">
+        <h1>firebase-starter</h1>
+        <div class="login-block">
+          <input id="email-input" type="text" name="email" placeholder="email"/>
+          <input id="password-input" type="text" name="name" placeholder="name"/>
+          <input id="login-button" type="submit" name="submit" value="submit"></input>
+        </div>
+      </div>
       <button id="fetchAll">fetchAll</button>
       <ul id="data-output">
 
       </ul>
-      <form>
-        <input type="text" name="name" placeholder="name"/>
-        <input type="text" name="email" placeholder="email"/>
+      <div>
+        <input id="message-input" type="text" placeholder="message"/>
         <input id="submit-button" type="submit" name="submit" value="submit"></input>
-      </form>
+      </div>
     </main>
     <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <script src="bundle.js"></script>

@@ -8,11 +8,27 @@ fetchAll()
 function fetchAll() {
 	myFirebaseRef.child("customers").on("value", function(customers) {
 		console.log(customers.val())
-		customers.val().forEach(function(customer){
+		for( customer in customers.val()){
 			console.log(customer)
-			appendListItem('Name: ' + customer.name + '  Email: ' + customer.email)
-		})
+			appendListItem('Name: ' + customers.val()[customer].name + '  Email: ' + customers.val()[customer].email)
+		}
 	})
+}
+
+document.getElementById('submit-button').addEventListener('click', submitUser)
+
+function submitUser(e) {
+	e.preventDefault()
+	var userName = document.getElementById('name-input').value
+	var userEmail = document.getElementById('email-input').value
+	console.log('userName', userName)
+	console.log('userEmail', userEmail)
+	var customer = {}
+	customer.name = userName
+	customer.email = userEmail
+
+	myFirebaseRef.child("customers").push().set(customer)
+
 }
 
 function appendListItem(text) {
