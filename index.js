@@ -23,17 +23,14 @@ logInButton.addEventListener('click', signIn)
 logOutButton.addEventListener('click', logOut)
 
 
-/*****    fetch messages    *****/
+/*****    messages    *****/
 fetchAllMessages()
 
 function fetchAllMessages(e) {
-	var ul = document.getElementById("data-output")
-	
 	firebase.database().ref("messages").on("value", function(messages) {
-		clearList(ul)
-		// console.log('messages:',messages.val())
+		clearMessages()
 		for( message in messages.val()){
-			appendListItem(ul, 'Message: ' + messages.val()[message].message + '  user: ' + messages.val()[message].submitter)
+			appendMessage(messages.val()[message].message, messages.val()[message].submitter)
 		}
 	})
 }
@@ -46,9 +43,8 @@ function submitMessage(e) {
 	message.message = messageText
 	message.submitter = userName
 	firebase.database().ref("messages").push().set(message)
-
+	document.getElementById('message-input').value = ""
 }
-
 
 /*****    auth    *****/
 var provider = new firebase.auth.GoogleAuthProvider()
@@ -95,15 +91,24 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 
 /*****    DOM functions    *****/
-function appendListItem(ul, text) {
-	// var ul = document.getElementById("data-output")
-	var li = document.createElement("li")
-	li.appendChild(document.createTextNode(text))
-	ul.appendChild(li)
+function appendMessage(message,submitter) {
+	console.log('appending message', message)
+	var messageBlock = document.createElement('div')
+	var msgText = document.createTextNode(message)
+	var msgElement = document.createElement('p')
+	msgElement.appendChild(msgText)
+	var submitterText = document.createTextNode(submitter)
+	var submitterElement = document.createElement('em')
+	submitterElement.appendChild(submitterText)
+	messageBlock.appendChild(msgElement)
+	messageBlock.appendChild(submitterElement)
+	messageBlock.className = "message-block"
+	document.getElementById('messages').appendChild(messageBlock)
 }
 
-function clearList(ul) {
-	while (ul.firstChild) {
-		ul.removeChild(ul.firstChild)
+function clearMessages() {
+	var messages = document.getElementById('messages')
+	while (messages.firstChild) {
+		messages.removeChild(messages.firstChild)
 	}
 }

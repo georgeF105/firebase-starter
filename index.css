@@ -6,11 +6,6 @@ main {
   /*text-align: center;*/
 }
 
-/*.content {
-	margin-top: 30px;
-	text-align: center;
-}*/
-
 li {
 	list-style: none;
 }
@@ -42,9 +37,6 @@ hr {
 	margin-top: 10px;
 }
 
-.header-title {
-}
-
 .login-block {
 	display: inline-block;
 	/*width: ;
@@ -54,4 +46,25 @@ hr {
 
 #logout-button {
 	display: none;
+}
+
+.message-block {
+	padding: 10px;
+	margin: 5px 0px 5px 0px;
+	border: 1px solid #D1D1D1;
+	border-radius: 4px;
+}
+
+#message-input-group {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+}
+
+#message-input {
+	width: 60%;
+}
+
+#submit-button {
+	/*width: 33%;*/
 }
