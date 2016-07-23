@@ -17,10 +17,12 @@ userName = 'Guest'
 var logInButton = document.getElementById('login-button')
 var logOutButton = document.getElementById('logout-button')
 var userNameTag = document.getElementById('user-name')
-// document.getElementById('fetchAll').addEventListener('click', fetchAllMessages)
 document.getElementById('submit-button').addEventListener('click', submitMessage)
 logInButton.addEventListener('click', signIn)
 logOutButton.addEventListener('click', logOut)
+
+var progressBar = document.getElementById('uploader')
+document.getElementById('file-button').addEventListener('change', uploadFile)
 
 
 /*****    messages    *****/
@@ -38,12 +40,61 @@ function fetchAllMessages(e) {
 function submitMessage(e) {
 	e.preventDefault()
 	var messageText = document.getElementById('message-input').value
-	console.log('message', message)
 	var message = {}
 	message.message = messageText
 	message.submitter = userName
 	firebase.database().ref("messages").push().set(message)
 	document.getElementById('message-input').value = ""
+}
+
+/*****    file upload    *****/
+function uploadFile(e) {
+	var file = e.target.files[0]
+	var storageRef = firebase.storage().ref('test-folder/' + file.name)
+	var task = storageRef.put(file)
+	submitFile(file.name, userName, storageRef.fullPath)
+	task.on('state_changed', 
+		function progress(snapshot) {
+			var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+			progressBar.value = percentage
+		},
+		function error(err){
+			alert('Error uploading file:', err)
+		},
+		function complete() {
+			alert('file uploaded')
+		}
+	)
+}
+
+
+
+/*****    file index    *****/
+firebase.database().ref('file-index').on("value", function(files) {
+	var fileIndex = document.getElementById('file-index')
+	clearElement(fileIndex)
+	for( file in files.val()){
+		var storageRef = firebase.storage().ref()
+		var fileRef = storageRef.child(files.val()[file].path)
+		var name = files.val()[file].name
+		var uploader = files.val()[file].uploader
+		console.log('name ' + name + '   uploader ' + uploader)
+		fileRef.getDownloadURL()
+			.then(function(url) {
+				appendFile(name, uploader, url)
+			})
+			.catch(function(err) {
+				console.log('Get file url error', err)
+			})
+	}
+})
+
+function submitFile(name, uploader, path) {
+	var fileInfo = {}
+	fileInfo.name = name
+	fileInfo.uploader = uploader
+	fileInfo.path = path
+	firebase.database().ref("file-index").push().set(fileInfo)
 }
 
 /*****    auth    *****/
@@ -56,8 +107,8 @@ function signIn() {
 		})
 		.catch(function(error) {
 			console.log('error, message:', error.message)
-		})
-
+		}
+	)
 }
 
 function logOut() {
@@ -92,8 +143,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 /*****    DOM functions    *****/
 function appendMessage(message,submitter) {
-	console.log('appending message', message)
 	var messageBlock = document.createElement('div')
+	messageBlock.className = "message-block"
 	var msgText = document.createTextNode(message)
 	var msgElement = document.createElement('p')
 	msgElement.appendChild(msgText)
@@ -102,13 +153,31 @@ function appendMessage(message,submitter) {
 	submitterElement.appendChild(submitterText)
 	messageBlock.appendChild(msgElement)
 	messageBlock.appendChild(submitterElement)
-	messageBlock.className = "message-block"
 	document.getElementById('messages').appendChild(messageBlock)
+}
+
+function appendFile(name, uploader, url) {
+	var fileBlock = document.createElement('div')
+	fileBlock.className = 'file-card'
+	var nameText = document.createTextNode(name)
+	var nameElement = document.createElement('a')
+	nameElement.appendChild(nameText)
+	nameElement.href = url
+	var uploaderText = document.createTextNode(uploader)
+	var uploaderElement = document.createElement('em')
+	uploaderElement.appendChild(uploaderText)
+	fileBlock.appendChild(nameElement)
+	fileBlock.appendChild(uploaderElement)
+	document.getElementById('file-index').appendChild(fileBlock)
 }
 
 function clearMessages() {
 	var messages = document.getElementById('messages')
-	while (messages.firstChild) {
-		messages.removeChild(messages.firstChild)
+	clearElement(messages)
+}
+
+function clearElement(el) {
+	while (el.firstChild) {
+		el.removeChild(el.firstChild)
 	}
 }

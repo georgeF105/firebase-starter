@@ -55,6 +55,15 @@ hr {
 	border-radius: 4px;
 }
 
+.file-card {
+	padding: 10px;
+	margin: 5px 0px 5px 0px;
+	border: 1px solid #D1D1D1;
+	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+}
+
 #message-input-group {
 	display: flex;
 	flex-wrap: nowrap;
@@ -67,4 +76,20 @@ hr {
 
 #submit-button {
 	/*width: 33%;*/
+}
+
+.upload-block {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#uploader {
+	-webkit-appearance: none;
+	/*height: px;*/
+	width:50%;
+}
+
+#file-button {
+	margin: 0px;
 }
