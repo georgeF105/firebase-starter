@@ -14,18 +14,23 @@ li {
 	/*padding-top: 10px;*/
 	/*background: grey;*/
 	/*margin: 0;*/
-	height: 70px;
+	min-height: 80px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: flex-end;
+	flex-flow: row wrap;
 }
 
 .header>h1{
 	margin-bottom: 0px;
+	/*min-width: 320px;*/
 }
 
 .login-block>input{
+	display: flex;
+	flex-wrap: wrap-reverse;
+	flex: end;
 	/*margin-bottom: 10px;*/
 }
 
@@ -38,7 +43,10 @@ hr {
 }
 
 .login-block {
-	display: inline-block;
+	/*display: inline-block;*/
+	display: flex;
+	flex-wrap: wrap-reverse;
+	justify-content: flex-end;
 	/*width: ;
 	display: flex;
 	flex-direction: row;*/
@@ -92,4 +100,5 @@ hr {
 
 #file-button {
 	margin: 0px;
+	width: 40%;
 }
