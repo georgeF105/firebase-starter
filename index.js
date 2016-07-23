@@ -10,12 +10,14 @@ var config = {
 
 firebase.initializeApp(config)
 
+/*****    global var's    *****/
+userName = 'Guest'
 
 /*****    dom elements    *****/
 var logInButton = document.getElementById('login-button')
 var logOutButton = document.getElementById('logout-button')
 var userNameTag = document.getElementById('user-name')
-document.getElementById('fetchAll').addEventListener('click', fetchAllMessages)
+// document.getElementById('fetchAll').addEventListener('click', fetchAllMessages)
 document.getElementById('submit-button').addEventListener('click', submitMessage)
 logInButton.addEventListener('click', signIn)
 logOutButton.addEventListener('click', logOut)
@@ -42,8 +44,7 @@ function submitMessage(e) {
 	console.log('message', message)
 	var message = {}
 	message.message = messageText
-	message.submitter = "unknown"
-
+	message.submitter = userName
 	firebase.database().ref("messages").push().set(message)
 
 }
@@ -77,14 +78,16 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
     console.log('user logged in')
-    userNameTag.innerHTML = user.email
+    userName = user.email
+    userNameTag.innerHTML = userName
     logInButton.style.display = 'none'
     logOutButton.style.display = 'initial'
 
   } else {
     // No user is signed in.
     console.log('no user logged in')
-    userNameTag.innerHTML = 'Guest'
+    userName = 'Guest'
+    userNameTag.innerHTML = userName
     logInButton.style.display = 'initial'
     logOutButton.style.display = 'none'
   }
