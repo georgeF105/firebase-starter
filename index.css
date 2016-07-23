@@ -1,0 +1,104 @@
+body {
+	margin: 0;
+}
+
+main {
+  /*text-align: center;*/
+}
+
+li {
+	list-style: none;
+}
+
+.header {
+	/*padding-top: 10px;*/
+	/*background: grey;*/
+	/*margin: 0;*/
+	min-height: 80px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-end;
+	flex-flow: row wrap;
+}
+
+.header>h1{
+	margin-bottom: 0px;
+	/*min-width: 320px;*/
+}
+
+.login-block>input{
+	display: flex;
+	flex-wrap: wrap-reverse;
+	flex: end;
+	/*margin-bottom: 10px;*/
+}
+
+#user-name {
+	margin: 5px;
+}
+
+hr {
+	margin-top: 10px;
+}
+
+.login-block {
+	/*display: inline-block;*/
+	display: flex;
+	flex-wrap: wrap-reverse;
+	justify-content: flex-end;
+	/*width: ;
+	display: flex;
+	flex-direction: row;*/
+}
+
+#logout-button {
+	display: none;
+}
+
+.message-block {
+	padding: 10px;
+	margin: 5px 0px 5px 0px;
+	border: 1px solid #D1D1D1;
+	border-radius: 4px;
+}
+
+.file-card {
+	padding: 10px;
+	margin: 5px 0px 5px 0px;
+	border: 1px solid #D1D1D1;
+	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+}
+
+#message-input-group {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+}
+
+#message-input {
+	width: 60%;
+}
+
+#submit-button {
+	/*width: 33%;*/
+}
+
+.upload-block {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#uploader {
+	-webkit-appearance: none;
+	/*height: px;*/
+	width:50%;
+}
+
+#file-button {
+	margin: 0px;
+	width: 40%;
+}
