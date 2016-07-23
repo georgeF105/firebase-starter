@@ -73,21 +73,27 @@ function uploadFile(e) {
 firebase.database().ref('file-index').on("value", function(files) {
 	var fileIndex = document.getElementById('file-index')
 	clearElement(fileIndex)
+	var storageRef = firebase.storage().ref()
 	for( file in files.val()){
-		var storageRef = firebase.storage().ref()
 		var fileRef = storageRef.child(files.val()[file].path)
+
 		var name = files.val()[file].name
 		var uploader = files.val()[file].uploader
+
 		console.log('name ' + name + '   uploader ' + uploader)
-		fileRef.getDownloadURL()
-			.then(function(url) {
-				appendFile(name, uploader, url)
-			})
-			.catch(function(err) {
-				console.log('Get file url error', err)
-			})
+		getUrl(name, uploader, fileRef)
 	}
 })
+
+function getUrl(name, uploader, fileRef) {
+	fileRef.getDownloadURL()
+		.then(function(url) {
+			appendFile(name, uploader, url)
+		}.bind(name))
+		.catch(function(err) {
+			console.log('Get file url error', err)
+		})
+}
 
 function submitFile(name, uploader, path) {
 	var fileInfo = {}
