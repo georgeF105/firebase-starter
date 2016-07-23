@@ -1,23 +1,23 @@
 console.log("welcome to firebase-starter")
 
-//var myFirebaseRef = new Firebase("https://fir-example-99bc6.firebaseio.com/");
-
+// setup firebase
 var config = {
   apiKey: "AIzaSyBRj3W3B9AtbSGelx3XXqgcAGifo3oe1Bo",
   authDomain: "fir-example-99bc6.firebaseapp.com",
   databaseURL: "https://fir-example-99bc6.firebaseio.com",
   storageBucket: "fir-example-99bc6.appspot.com",
 }
-
 firebase.initializeApp(config)
 
-document.getElementById('fetchAll').addEventListener('click', fetchAll)
+
+// get dom elements
+document.getElementById('fetchAll').addEventListener('click', fetchAllMessages)
 document.getElementById('submit-button').addEventListener('click', submitMessage)
 document.getElementById('signup-button').addEventListener('click', signUp)
 
-fetchAll()
+fetchAllMessages()
 
-function fetchAll(e) {
+function fetchAllMessages(e) {
 	var ul = document.getElementById("data-output")
 	
 	firebase.database().ref("messages").on("value", function(messages) {
