@@ -6,12 +6,6 @@ main {
   /*text-align: center;*/
 }
 
-.container {
-	max-width: 1050px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
 .content {
 	margin-top: 30px;
 	text-align: center;
@@ -23,19 +17,41 @@ li {
 
 .header {
 	/*padding-top: 10px;*/
-	border-bottom: 1px solid black;
-	background: grey;
-	margin: 0;
-	height: 80px;
+	/*background: grey;*/
+	/*margin: 0;*/
+	height: 70px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-end;
+}
+
+.header>h1{
+	margin-bottom: 0px;
+}
+
+.login-block>input{
+	/*margin-bottom: 10px;*/
+}
+
+#user-name {
+	margin: 5px;
+}
+
+hr {
+	margin-top: 10px;
 }
 
 .header-title {
-	float: left;
 }
 
 .login-block {
-	border: 1px solid black;
-	margin: 1em 0;
-	padding: 2px;
-	float: right;
+	display: inline-block;
+	/*width: ;
+	display: flex;
+	flex-direction: row;*/
+}
+
+#logout-button {
+	display: none;
 }

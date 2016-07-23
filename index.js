@@ -1,20 +1,27 @@
 console.log("welcome to firebase-starter")
 
-// setup firebase
+/*****    setup firebase   *****/
 var config = {
   apiKey: "AIzaSyBRj3W3B9AtbSGelx3XXqgcAGifo3oe1Bo",
   authDomain: "fir-example-99bc6.firebaseapp.com",
   databaseURL: "https://fir-example-99bc6.firebaseio.com",
   storageBucket: "fir-example-99bc6.appspot.com",
 }
+
 firebase.initializeApp(config)
 
 
-// get dom elements
+/*****    dom elements    *****/
+var logInButton = document.getElementById('login-button')
+var logOutButton = document.getElementById('logout-button')
+var userNameTag = document.getElementById('user-name')
 document.getElementById('fetchAll').addEventListener('click', fetchAllMessages)
 document.getElementById('submit-button').addEventListener('click', submitMessage)
-document.getElementById('signup-button').addEventListener('click', signUp)
+logInButton.addEventListener('click', signIn)
+logOutButton.addEventListener('click', logOut)
 
+
+/*****    fetch messages    *****/
 fetchAllMessages()
 
 function fetchAllMessages(e) {
@@ -22,7 +29,7 @@ function fetchAllMessages(e) {
 	
 	firebase.database().ref("messages").on("value", function(messages) {
 		clearList(ul)
-		console.log(messages.val())
+		// console.log('messages:',messages.val())
 		for( message in messages.val()){
 			appendListItem(ul, 'Message: ' + messages.val()[message].message + '  user: ' + messages.val()[message].submitter)
 		}
@@ -41,18 +48,28 @@ function submitMessage(e) {
 
 }
 
-function signUp(e) {
-	e.preventDefault()
-	var email = document.getElementById('email-input').value
-	var password = document.getElementById('password-input').value
 
-	firebase.auth().createUserWithEmailAndPassword(email, password)
-		.then(function(user) {
-			console.log('user',user)
+/*****    auth    *****/
+var provider = new firebase.auth.GoogleAuthProvider()
+
+function signIn() {
+	firebase.auth().signInWithPopup(provider)
+		.then(function(result) {
+			console.log('signed in user:', result.user)
 		})
 		.catch(function(error) {
-			console.log('error code', error.code)
-			console.log('error message', error.message)
+			console.log('error, message:', error.message)
+		})
+
+}
+
+function logOut() {
+	firebase.auth().signOut()
+		.then(function() {
+			console.log('signed out')
+		},
+		function(error){
+			console.log('sign out error:', error)
 		})
 }
 
@@ -60,12 +77,21 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
     console.log('user logged in')
+    userNameTag.innerHTML = user.email
+    logInButton.style.display = 'none'
+    logOutButton.style.display = 'initial'
+
   } else {
     // No user is signed in.
     console.log('no user logged in')
+    userNameTag.innerHTML = 'Guest'
+    logInButton.style.display = 'initial'
+    logOutButton.style.display = 'none'
   }
 })
 
+
+/*****    DOM functions    *****/
 function appendListItem(ul, text) {
 	// var ul = document.getElementById("data-output")
 	var li = document.createElement("li")

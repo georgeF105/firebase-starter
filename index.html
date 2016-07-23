@@ -4,24 +4,24 @@
     <meta charset="utf-8" />
     <title>firebase-starter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" />
+    <link href="normalize.css" rel="stylesheet" />
+    <link href="skeleton.css" rel="stylesheet" />
     <link href="index.css" rel="stylesheet" />
   </head>
   <body>
     <main>
 
-      <div class="header">
-        <div class="container">
+      <div class="container">
+        <div class="header">
           <h1 class="header-title">firebase-starter</h1>
           <div class="login-block">
-            <input id="email-input" type="text" name="email" placeholder="email"/>
-            <input id="password-input" type="password" name="name" placeholder="password"/>
+            <span id="user-name">Guest</span>
             <input id="login-button" type="submit" value="Log In"></input>
-            <input id="signup-button" type="submit" value="Sign Up"></input>
+            <input id="logout-button" type="submit" value="Sign Out"></input>
           </div>
         </div>
       </div>
-
+      <hr/>
       <div class="container content">      
         <button id="fetchAll">fetchAll</button>
         <ul id="data-output">
