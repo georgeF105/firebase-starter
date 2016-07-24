@@ -25,10 +25,8 @@ userName = 'Guest'
 
 /*****    messages    *****/
 firebase.database().ref("messages").on("value", function(messages) {
-	clearMessages()
-	for( message in messages.val()){
-		view.appendMessage(messages.val()[message].message, messages.val()[message].submitter)
-	}
+	view.clearMessages()
+	view.appendMessages(messages.val())
 })
 
 function submitMessage(e) {
@@ -64,8 +62,7 @@ function uploadFile(e) {
 
 /*****    file index    *****/
 firebase.database().ref('file-index').on("value", function(files) {
-	var fileIndex = document.getElementById('file-index')
-	clearElement(fileIndex)
+	view.clearFiles()
 	var storageRef = firebase.storage().ref()
 	for( file in files.val()){
 		var fileRef = storageRef.child(files.val()[file].path)
@@ -138,15 +135,3 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 
 /*****    DOM functions    *****/
-
-
-function clearMessages() {
-	var messages = document.getElementById('messages')
-	clearElement(messages)
-}
-
-function clearElement(el) {
-	while (el.firstChild) {
-		el.removeChild(el.firstChild)
-	}
-}
