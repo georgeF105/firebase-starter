@@ -1,9 +1,14 @@
 body {
-	margin: 0;
+	
+	position: relative;
 }
 
 main {
-  /*text-align: center;*/
+  min-height: 100vh;
+  position: relative;
+  margin: 0;
+  padding-top: 80px;
+  box-sizing: border-box;
 }
 
 li {
@@ -14,12 +19,15 @@ li {
 	/*padding-top: 10px;*/
 	/*background: grey;*/
 	/*margin: 0;*/
+	width: 100%;
 	min-height: 80px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: flex-end;
 	flex-flow: row wrap;
+	position: absolute;
+	z-index: 2;
 }
 
 .header>h1{
@@ -40,6 +48,7 @@ li {
 
 hr {
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .login-block {
@@ -56,11 +65,30 @@ hr {
 	display: none;
 }
 
+.content {
+	height: 100%;
+	/*margin-top: 30px;*/
+	/*min-height: 100vh;*/
+}
+
+.footer {
+  text-align: center;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	margin-bottom: 20px;
+	z-index: 2;
+}
+
 .message-block {
 	padding: 10px;
 	margin: 5px 0px 5px 0px;
 	border: 1px solid #D1D1D1;
 	border-radius: 4px;
+}
+
+.message-col {
+	margin-bottom: 70px;
 }
 
 .file-card {
