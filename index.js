@@ -14,28 +14,27 @@ firebase.initializeApp(config)
 userName = 'Guest'
 
 /*****    dom elements    *****/
+// message elements
 var logInButton = document.getElementById('login-button')
 var logOutButton = document.getElementById('logout-button')
 var userNameTag = document.getElementById('user-name')
-document.getElementById('submit-button').addEventListener('click', submitMessage)
+var submitMessageButton = document.getElementById('submit-button')
+submitMessageButton.addEventListener('click', submitMessage)
 logInButton.addEventListener('click', signIn)
 logOutButton.addEventListener('click', logOut)
-
+//file elements
 var progressBar = document.getElementById('uploader')
-document.getElementById('file-button').addEventListener('change', uploadFile)
+var fileUploadButton = document.getElementById('file-button')
+fileUploadButton = addEventListener('change', uploadFile)
 
 
 /*****    messages    *****/
-fetchAllMessages()
-
-function fetchAllMessages(e) {
-	firebase.database().ref("messages").on("value", function(messages) {
-		clearMessages()
-		for( message in messages.val()){
-			appendMessage(messages.val()[message].message, messages.val()[message].submitter)
-		}
-	})
-}
+firebase.database().ref("messages").on("value", function(messages) {
+	clearMessages()
+	for( message in messages.val()){
+		appendMessage(messages.val()[message].message, messages.val()[message].submitter)
+	}
+})
 
 function submitMessage(e) {
 	e.preventDefault()
@@ -49,6 +48,7 @@ function submitMessage(e) {
 
 /*****    file upload    *****/
 function uploadFile(e) {
+	if(!e.target.files) return 0
 	var file = e.target.files[0]
 	var storageRef = firebase.storage().ref('test-folder/' + file.name)
 	var task = storageRef.put(file)
@@ -62,12 +62,10 @@ function uploadFile(e) {
 			alert('Error uploading file:', err)
 		},
 		function complete() {
-			alert('file uploaded')
+			// stop error ???
 		}
 	)
 }
-
-
 
 /*****    file index    *****/
 firebase.database().ref('file-index').on("value", function(files) {
@@ -76,11 +74,8 @@ firebase.database().ref('file-index').on("value", function(files) {
 	var storageRef = firebase.storage().ref()
 	for( file in files.val()){
 		var fileRef = storageRef.child(files.val()[file].path)
-
 		var name = files.val()[file].name
 		var uploader = files.val()[file].uploader
-
-		console.log('name ' + name + '   uploader ' + uploader)
 		getUrl(name, uploader, fileRef)
 	}
 })
