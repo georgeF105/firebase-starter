@@ -22,7 +22,6 @@ firebase.initializeApp(config)
 userName = 'Guest'
 
 
-
 /*****    messages    *****/
 firebase.database().ref("messages").on("value", function(messages) {
 	view.clearMessages()
@@ -30,12 +29,12 @@ firebase.database().ref("messages").on("value", function(messages) {
 })
 
 function submitMessage() {
-	var messageText = document.getElementById('message-input').value
-	var message = {}
-	message.message = messageText
-	message.submitter = userName
-	firebase.database().ref("messages").push().set(message)
-	document.getElementById('message-input').value = ""
+	var messageText = view.getMessageText()
+	var messageObj = {}
+	messageObj.message = messageText
+	messageObj.submitter = userName
+	firebase.database().ref("messages").push().set(messageObj)
+	view.clearMessageTest()
 }
 
 /*****    file upload    *****/
@@ -61,6 +60,7 @@ function uploadFile(file) {
 firebase.database().ref('file-index').on("value", function(files) {
 	view.clearFiles()
 	var storageRef = firebase.storage().ref()
+
 	for( file in files.val()){
 		var fileRef = storageRef.child(files.val()[file].path)
 		var name = files.val()[file].name
@@ -116,16 +116,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User is signed in.
     console.log('user logged in')
     userName = user.email
-    userNameTag.innerHTML = userName
-    logInButton.style.display = 'none'
-    logOutButton.style.display = 'initial'
-
+    view.signInUser(userName)
   } else {
     // No user is signed in.
     console.log('no user logged in')
     userName = 'Guest'
-    userNameTag.innerHTML = userName
-    logInButton.style.display = 'initial'
-    logOutButton.style.display = 'none'
+    view.signOutUser(userName)
   }
 })
