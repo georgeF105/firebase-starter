@@ -29,8 +29,7 @@ firebase.database().ref("messages").on("value", function(messages) {
 	view.appendMessages(messages.val())
 })
 
-function submitMessage(e) {
-	e.preventDefault()
+function submitMessage() {
 	var messageText = document.getElementById('message-input').value
 	var message = {}
 	message.message = messageText
@@ -40,16 +39,14 @@ function submitMessage(e) {
 }
 
 /*****    file upload    *****/
-function uploadFile(e) {
-	if(!e.target.files) return 0
-	var file = e.target.files[0]
+function uploadFile(file) {
 	var storageRef = firebase.storage().ref('test-folder/' + file.name)
 	var task = storageRef.put(file)
 	submitFile(file.name, userName, storageRef.fullPath)
 	task.on('state_changed', 
 		function progress(snapshot) {
 			var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-			progressBar.value = percentage
+			view.updateProgressBar(percentage)
 		},
 		function error(err){
 			alert('Error uploading file:', err)
@@ -132,6 +129,3 @@ firebase.auth().onAuthStateChanged(function(user) {
     logOutButton.style.display = 'none'
   }
 })
-
-
-/*****    DOM functions    *****/
