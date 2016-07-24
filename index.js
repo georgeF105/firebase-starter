@@ -7,6 +7,7 @@ view.signInEvent(signIn)
 view.logOutEvent(logOut)
 view.uploadFileEvent(uploadFile)
 
+
 /*****    setup firebase   *****/
 var config = {
   apiKey: "AIzaSyBRj3W3B9AtbSGelx3XXqgcAGifo3oe1Bo",
@@ -26,7 +27,7 @@ userName = 'Guest'
 firebase.database().ref("messages").on("value", function(messages) {
 	clearMessages()
 	for( message in messages.val()){
-		appendMessage(messages.val()[message].message, messages.val()[message].submitter)
+		view.appendMessage(messages.val()[message].message, messages.val()[message].submitter)
 	}
 })
 
@@ -77,7 +78,7 @@ firebase.database().ref('file-index').on("value", function(files) {
 function getUrl(name, uploader, fileRef) {
 	fileRef.getDownloadURL()
 		.then(function(url) {
-			appendFile(name, uploader, url)
+			view.appendFile(name, uploader, url)
 		}.bind(name))
 		.catch(function(err) {
 			console.log('Get file url error', err)
@@ -137,34 +138,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 
 /*****    DOM functions    *****/
-function appendMessage(message,submitter) {
-	var messageBlock = document.createElement('div')
-	messageBlock.className = "message-block"
-	var msgText = document.createTextNode(message)
-	var msgElement = document.createElement('p')
-	msgElement.appendChild(msgText)
-	var submitterText = document.createTextNode(submitter)
-	var submitterElement = document.createElement('em')
-	submitterElement.appendChild(submitterText)
-	messageBlock.appendChild(msgElement)
-	messageBlock.appendChild(submitterElement)
-	document.getElementById('messages').appendChild(messageBlock)
-}
 
-function appendFile(name, uploader, url) {
-	var fileBlock = document.createElement('div')
-	fileBlock.className = 'file-card'
-	var nameText = document.createTextNode(name)
-	var nameElement = document.createElement('a')
-	nameElement.appendChild(nameText)
-	nameElement.href = url
-	var uploaderText = document.createTextNode(uploader)
-	var uploaderElement = document.createElement('em')
-	uploaderElement.appendChild(uploaderText)
-	fileBlock.appendChild(nameElement)
-	fileBlock.appendChild(uploaderElement)
-	document.getElementById('file-index').appendChild(fileBlock)
-}
 
 function clearMessages() {
 	var messages = document.getElementById('messages')
