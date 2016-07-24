@@ -1,5 +1,12 @@
 console.log("welcome to firebase-starter")
 
+var view = require('./lib/view')
+
+view.submitMessageEvent(submitMessage)
+view.signInEvent(signIn)
+view.logOutEvent(logOut)
+view.uploadFileEvent(uploadFile)
+
 /*****    setup firebase   *****/
 var config = {
   apiKey: "AIzaSyBRj3W3B9AtbSGelx3XXqgcAGifo3oe1Bo",
@@ -13,19 +20,6 @@ firebase.initializeApp(config)
 /*****    global var's    *****/
 userName = 'Guest'
 
-/*****    dom elements    *****/
-// message elements
-var logInButton = document.getElementById('login-button')
-var logOutButton = document.getElementById('logout-button')
-var userNameTag = document.getElementById('user-name')
-var submitMessageButton = document.getElementById('submit-button')
-submitMessageButton.addEventListener('click', submitMessage)
-logInButton.addEventListener('click', signIn)
-logOutButton.addEventListener('click', logOut)
-//file elements
-var progressBar = document.getElementById('uploader')
-var fileUploadButton = document.getElementById('file-button')
-fileUploadButton = addEventListener('change', uploadFile)
 
 
 /*****    messages    *****/
