@@ -1,9 +1,12 @@
 
 # firebase-starter
 
-it's a real sweet app
+## About firebase
 
-## how
+### What is it?
+
+
+## how to use
 
 ### install
 
