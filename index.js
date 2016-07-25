@@ -2,6 +2,7 @@ console.log("welcome to firebase-starter")
 
 var view = require('./lib/view')
 
+/*****    attach events    *****/
 view.submitMessageEvent(submitMessage)
 view.signInEvent(signIn)
 view.logOutEvent(logOut)
@@ -20,7 +21,6 @@ firebase.initializeApp(config)
 
 /*****    global var's    *****/
 userName = 'Guest'
-
 
 /*****    messages    *****/
 firebase.database().ref("messages").on("value", function(messages) {
@@ -52,8 +52,7 @@ function uploadFile(file) {
 		},
 		function complete() {
 			// stop error ???
-		}
-	)
+		})
 }
 
 /*****    file index    *****/
@@ -106,8 +105,7 @@ function signIn() {
 		})
 		.catch(function(error) {
 			console.log('error, message:', error.message)
-		}
-	)
+		})
 }
 
 function logOut() {
