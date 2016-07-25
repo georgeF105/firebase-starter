@@ -60,30 +60,19 @@ function uploadFile(file) {
 firebase.database().ref('file-index').on("value", function(fbFiles) {
 	view.clearFiles()
 	var storageRef = firebase.storage().ref()
-
 	var files = fbFiles.val()
-
-	var filePromises = []
-
+	var urlPromises = []
 	for(file in files) {
 		var fileRef = storageRef.child(files[file].path)
-		filePromises.push(urlPromise(files[file]))
+		urlPromises.push(urlPromise(files[file]))
 	}
-
-	Promise.all(filePromises)
+	Promise.all(urlPromises)
 		.then(function(fRefs){
-			console.log('files', files)
 			view.appendFiles(files)
-			console.log('file refs', fRefs)
 		})
-
-
-	// for( file in files){
-	// 	var fileRef = storageRef.child(files[file].path)
-	// 	var name = files[file].name
-	// 	var uploader = files[file].uploader
-	// 	getUrl(name, uploader, fileRef)
-	// }
+		.catch(function(err) {
+			console.error(err)
+		})
 })
 
 function urlPromise(file) {
@@ -95,18 +84,7 @@ function urlPromise(file) {
 			return true
 		})
 		.catch(function(err) {
-			console.log('Get file url error', err)
-		})
-}
-
-
-function getUrl(name, uploader, fileRef) {
-	fileRef.getDownloadURL()
-		.then(function(url) {
-			view.appendFile(name, uploader, url)
-		}.bind(name))
-		.catch(function(err) {
-			console.log('Get file url error', err)
+			console.error(err)
 		})
 }
 
