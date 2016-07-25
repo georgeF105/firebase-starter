@@ -1,5 +1,14 @@
 console.log("welcome to firebase-starter")
 
+var view = require('./lib/view')
+
+/*****    attach events    *****/
+view.submitMessageEvent(submitMessage)
+view.signInEvent(signIn)
+view.logOutEvent(logOut)
+view.uploadFileEvent(uploadFile)
+
+
 /*****    setup firebase   *****/
 var config = {
   apiKey: "AIzaSyBRj3W3B9AtbSGelx3XXqgcAGifo3oe1Bo",
@@ -13,80 +22,68 @@ firebase.initializeApp(config)
 /*****    global var's    *****/
 userName = 'Guest'
 
-/*****    dom elements    *****/
-// message elements
-var logInButton = document.getElementById('login-button')
-var logOutButton = document.getElementById('logout-button')
-var userNameTag = document.getElementById('user-name')
-var submitMessageButton = document.getElementById('submit-button')
-submitMessageButton.addEventListener('click', submitMessage)
-logInButton.addEventListener('click', signIn)
-logOutButton.addEventListener('click', logOut)
-//file elements
-var progressBar = document.getElementById('uploader')
-var fileUploadButton = document.getElementById('file-button')
-fileUploadButton = addEventListener('change', uploadFile)
-
-
 /*****    messages    *****/
 firebase.database().ref("messages").on("value", function(messages) {
-	clearMessages()
-	for( message in messages.val()){
-		appendMessage(messages.val()[message].message, messages.val()[message].submitter)
-	}
+	view.clearMessages()
+	view.appendMessages(messages.val())
 })
 
-function submitMessage(e) {
-	e.preventDefault()
-	var messageText = document.getElementById('message-input').value
-	var message = {}
-	message.message = messageText
-	message.submitter = userName
-	firebase.database().ref("messages").push().set(message)
-	document.getElementById('message-input').value = ""
+function submitMessage() {
+	var messageText = view.getMessageText()
+	var messageObj = {}
+	messageObj.message = messageText
+	messageObj.submitter = userName
+	firebase.database().ref("messages").push().set(messageObj)
+	view.clearMessageTest()
 }
 
 /*****    file upload    *****/
-function uploadFile(e) {
-	if(!e.target.files) return 0
-	var file = e.target.files[0]
+function uploadFile(file) {
 	var storageRef = firebase.storage().ref('test-folder/' + file.name)
 	var task = storageRef.put(file)
 	submitFile(file.name, userName, storageRef.fullPath)
 	task.on('state_changed', 
 		function progress(snapshot) {
 			var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-			progressBar.value = percentage
+			view.updateProgressBar(percentage)
 		},
 		function error(err){
 			alert('Error uploading file:', err)
 		},
 		function complete() {
 			// stop error ???
-		}
-	)
+		})
 }
 
 /*****    file index    *****/
-firebase.database().ref('file-index').on("value", function(files) {
-	var fileIndex = document.getElementById('file-index')
-	clearElement(fileIndex)
+firebase.database().ref('file-index').on("value", function(fbFiles) {
+	view.clearFiles()
 	var storageRef = firebase.storage().ref()
-	for( file in files.val()){
-		var fileRef = storageRef.child(files.val()[file].path)
-		var name = files.val()[file].name
-		var uploader = files.val()[file].uploader
-		getUrl(name, uploader, fileRef)
+	var files = fbFiles.val()
+	var urlPromises = []
+	for(file in files) {
+		var fileRef = storageRef.child(files[file].path)
+		urlPromises.push(urlPromise(files[file]))
 	}
+	Promise.all(urlPromises)
+		.then(function(fRefs){
+			view.appendFiles(files)
+		})
+		.catch(function(err) {
+			console.error(err)
+		})
 })
 
-function getUrl(name, uploader, fileRef) {
-	fileRef.getDownloadURL()
+function urlPromise(file) {
+	var storageRef = firebase.storage().ref()
+	var fileRef = storageRef.child(file.path)
+	return fileRef.getDownloadURL()
 		.then(function(url) {
-			appendFile(name, uploader, url)
-		}.bind(name))
+			file.url = url
+			return true
+		})
 		.catch(function(err) {
-			console.log('Get file url error', err)
+			console.error(err)
 		})
 }
 
@@ -108,8 +105,7 @@ function signIn() {
 		})
 		.catch(function(error) {
 			console.log('error, message:', error.message)
-		}
-	)
+		})
 }
 
 function logOut() {
@@ -127,58 +123,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User is signed in.
     console.log('user logged in')
     userName = user.email
-    userNameTag.innerHTML = userName
-    logInButton.style.display = 'none'
-    logOutButton.style.display = 'initial'
-
+    view.signInUser(userName)
   } else {
     // No user is signed in.
     console.log('no user logged in')
     userName = 'Guest'
-    userNameTag.innerHTML = userName
-    logInButton.style.display = 'initial'
-    logOutButton.style.display = 'none'
+    view.signOutUser(userName)
   }
 })
-
-
-/*****    DOM functions    *****/
-function appendMessage(message,submitter) {
-	var messageBlock = document.createElement('div')
-	messageBlock.className = "message-block"
-	var msgText = document.createTextNode(message)
-	var msgElement = document.createElement('p')
-	msgElement.appendChild(msgText)
-	var submitterText = document.createTextNode(submitter)
-	var submitterElement = document.createElement('em')
-	submitterElement.appendChild(submitterText)
-	messageBlock.appendChild(msgElement)
-	messageBlock.appendChild(submitterElement)
-	document.getElementById('messages').appendChild(messageBlock)
-}
-
-function appendFile(name, uploader, url) {
-	var fileBlock = document.createElement('div')
-	fileBlock.className = 'file-card'
-	var nameText = document.createTextNode(name)
-	var nameElement = document.createElement('a')
-	nameElement.appendChild(nameText)
-	nameElement.href = url
-	var uploaderText = document.createTextNode(uploader)
-	var uploaderElement = document.createElement('em')
-	uploaderElement.appendChild(uploaderText)
-	fileBlock.appendChild(nameElement)
-	fileBlock.appendChild(uploaderElement)
-	document.getElementById('file-index').appendChild(fileBlock)
-}
-
-function clearMessages() {
-	var messages = document.getElementById('messages')
-	clearElement(messages)
-}
-
-function clearElement(el) {
-	while (el.firstChild) {
-		el.removeChild(el.firstChild)
-	}
-}
