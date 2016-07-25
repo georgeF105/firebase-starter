@@ -57,17 +57,48 @@ function uploadFile(file) {
 }
 
 /*****    file index    *****/
-firebase.database().ref('file-index').on("value", function(files) {
+firebase.database().ref('file-index').on("value", function(fbFiles) {
 	view.clearFiles()
 	var storageRef = firebase.storage().ref()
 
-	for( file in files.val()){
-		var fileRef = storageRef.child(files.val()[file].path)
-		var name = files.val()[file].name
-		var uploader = files.val()[file].uploader
-		getUrl(name, uploader, fileRef)
+	var files = fbFiles.val()
+
+	var filePromises = []
+
+	for(file in files) {
+		var fileRef = storageRef.child(files[file].path)
+		filePromises.push(urlPromise(files[file]))
 	}
+
+	Promise.all(filePromises)
+		.then(function(fRefs){
+			console.log('files', files)
+			view.appendFiles(files)
+			console.log('file refs', fRefs)
+		})
+
+
+	// for( file in files){
+	// 	var fileRef = storageRef.child(files[file].path)
+	// 	var name = files[file].name
+	// 	var uploader = files[file].uploader
+	// 	getUrl(name, uploader, fileRef)
+	// }
 })
+
+function urlPromise(file) {
+	var storageRef = firebase.storage().ref()
+	var fileRef = storageRef.child(file.path)
+	return fileRef.getDownloadURL()
+		.then(function(url) {
+			file.url = url
+			return true
+		})
+		.catch(function(err) {
+			console.log('Get file url error', err)
+		})
+}
+
 
 function getUrl(name, uploader, fileRef) {
 	fileRef.getDownloadURL()
